@@ -16,14 +16,16 @@ import java.util.List;
 public class Node {
 
     private int[] state;
+    public Environment environment;
     private List<Node> children = new ArrayList<Node>();
     private Node parent = null;
-    private List<Integer> validMove = new ArrayList<Integer>();
-    private int[] parentAction = null;
+    private boolean[][] validMoves = new boolean[9][6];
+    private boolean[] parentAction = null;
     private float reward = 0;
     private int timesvisited = 0;
 
     Node(Environment e) {
+        this.environment = e;
         this.state = e.getMarioState();
     }
 
@@ -86,14 +88,14 @@ public class Node {
     /**
      * @return the parentAction
      */
-    public int[] getParentAction() {
+    public boolean[] getParentAction() {
         return parentAction;
     }
 
     /**
      * @param parentAction the parentAction to set
      */
-    public void setParentAction(int[] parentAction) {
+    public void setParentAction(boolean[] parentAction) {
         this.parentAction = parentAction;
     }
 
@@ -123,6 +125,20 @@ public class Node {
      */
     public void setTimesvisited(int timesvisited) {
         this.timesvisited = timesvisited;
+    }
+
+    /**
+     * @return the validMoves
+     */
+    public boolean[][] getValidMoves() {
+        return validMoves;
+    }
+
+    /**
+     * @param validMoves the validMoves to set
+     */
+    public void setValidMoves(boolean[][] validMoves) {
+        this.validMoves = validMoves;
     }
 
 }
