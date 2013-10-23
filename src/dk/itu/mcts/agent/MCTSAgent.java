@@ -26,7 +26,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
 
     public boolean[] getAction() {
         //this is a test: Hello there
-//        while (System.currentTimeMillis() < timeDue - responseTime) {
+//        while (System.currentTimeMillis() < 40 - responseTime) {
 //            Node v1 = TreePolicy(current mario node);
 //            double reward = DefaultPolicy(v1);
 //            Backpropagate(v1, reward);
