@@ -5,6 +5,7 @@
  */
 package dk.itu.mcts.agent;
 
+import ch.idsia.benchmark.mario.environments.Environment;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,12 +19,110 @@ public class Node {
     private List<Node> children = new ArrayList<Node>();
     private Node parent = null;
     private List<Integer> validMove = new ArrayList<Integer>();
-    public int parentAction = -1;
+    private int[] parentAction = null;
     private float reward = 0;
     private int timesvisited = 0;
 
-    Node(int[] state) {
+    Node(Environment e) {
+        this.state = e.getMarioState();
+    }
+
+    public boolean gameOver() {
+        if (getState()[0] == 2) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @return the Mario state
+     */
+    public int[] getState() {
+        return state;
+    }
+
+    /**
+     * @param state the state to set
+     */
+    public void setState(int[] state) {
         this.state = state;
+    }
+
+    /**
+     * @return the children
+     */
+    public List<Node> getChildren() {
+        return children;
+    }
+
+    /**
+     * @param children the children to set
+     */
+    public void setChildren(List<Node> children) {
+        this.children = children;
+    }
+
+    /**
+     * @param child the child to add
+     */
+    public void addChild(Node child) {
+        this.children.add(child);
+    }
+
+    /**
+     * @return the parent
+     */
+    public Node getParent() {
+        return parent;
+    }
+
+    /**
+     * @param parent the parent to set
+     */
+    public void setParent(Node parent) {
+        this.parent = parent;
+    }
+
+    /**
+     * @return the parentAction
+     */
+    public int[] getParentAction() {
+        return parentAction;
+    }
+
+    /**
+     * @param parentAction the parentAction to set
+     */
+    public void setParentAction(int[] parentAction) {
+        this.parentAction = parentAction;
+    }
+
+    /**
+     * @return the reward
+     */
+    public float getReward() {
+        return reward;
+    }
+
+    /**
+     * @param reward the reward to set
+     */
+    public void setReward(float reward) {
+        this.reward = reward;
+    }
+
+    /**
+     * @return the timesvisited
+     */
+    public int getTimesvisited() {
+        return timesvisited;
+    }
+
+    /**
+     * @param timesvisited the timesvisited to set
+     */
+    public void setTimesvisited(int timesvisited) {
+        this.timesvisited = timesvisited;
     }
 
 }

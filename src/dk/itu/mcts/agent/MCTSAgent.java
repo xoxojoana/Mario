@@ -37,6 +37,13 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
     
     //tree policy
     public Node TreePolicy(Node v){
+        while(!v.gameOver()){
+            if(!isFullyExpanded(v)){
+                return expand(v);
+            }else{
+                v = bestChild(v);
+            }
+        }
         return null;        
     }
     
@@ -46,13 +53,22 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
     }
 
     //expand the node
-    public Node expend(Node v){
+    public Node expand(Node v){
         return null;
     }
     
     //calculate the best child
     public Node bestChild(Node v){
-        return null;
+        Node bestChild = null;
+        double max = Double.NEGATIVE_INFINITY;
+        for(Node child: v.getChildren()){
+            double current = child.getReward() / child.getTimesvisited() + C * Math.sqrt(2 * Math.log10(v.getTimesvisited())) / child.getTimesvisited();
+            if(max < current){
+                max = current;
+                bestChild = child;
+            }
+        }
+        return bestChild;
     }
     
     //play out
@@ -61,8 +77,12 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
     }
     
     //Backpropagate the reward to each node
-    public void Backpropagate(Node v){
-        
+    public void Backpropagate(Node v, float reward){
+        while(v != null){
+            v.setTimesvisited(v.getTimesvisited() + 1);
+            v.setReward(reward);
+            v = v.getParent();
+        }
     }
     
     public void reset() {
