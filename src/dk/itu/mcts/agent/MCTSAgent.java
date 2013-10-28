@@ -12,10 +12,6 @@ import ch.idsia.benchmark.mario.engine.sprites.Mario;
 import ch.idsia.benchmark.mario.environments.Environment;
 import ch.idsia.tools.EvaluationInfo;
 
-/**
- *
- * @author Jinhong
- */
 public class MCTSAgent extends BasicMarioAIAgent implements Agent {
 
     public float C = (float) (0.5 / Math.sqrt(2));
@@ -26,8 +22,9 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
         reset();
     }
 
+    @Override
     public boolean[] getAction() {
-        //this is a test: Hello there
+        
 //        while (System.currentTimeMillis() < 40 - responseTime) {
 //            Node v1 = TreePolicy(current mario node);
 //            double reward = DefaultPolicy(v1);
@@ -36,7 +33,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
 //        Node bestChild = BestChild(rootNode);
         Node root = new Node(this.environment);
         int t = 10;
-        while (t>1) {
+        while (t>0) {
             t--;
             System.out.println("1");
             Node v1 = TreePolicy(root);
@@ -74,7 +71,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
 
     //check if node is fully expanded
     public boolean isFullyExpanded(Node v) {
-        /* possible moves       L R D J S U     0 false, 1 true
+        /* possible moves        L R D J S U     0 false, 1 true
          *   right               0 1 0 0 0 0
          *   right jump          0 1 0 1 0 0
          *   right jump speed    0 1 0 1 1 0 
@@ -87,7 +84,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
          */
         // no child yet
         if (v.getChildren().size() < 1) {
-            v = iniPossMove(v);
+            v = initPossMove(v);
             return false;
         }
         // still untried move left
@@ -98,7 +95,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
     }
 
     //temp method for initialize the possible moves
-    private Node iniPossMove(Node v) {
+    private Node initPossMove(Node v) {
         boolean[][] validMoves = {{false, true, false, false, false, false},
         {false, true, false, true, false, false},
         {false, true, false, true, true, false},
@@ -143,7 +140,8 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
     public float DefaultPolicy(Node v) {
         Environment copy = v.environment;
         int count = 10;
-        Agent agent = new ForwardAgent();
+//        Agent agent = new ForwardAgent();
+        Agent agent = new MCTSAgent();
         while (!copy.isLevelFinished() && count > 0 && copy.getMarioStatus()!=Mario.STATUS_DEAD && copy.getMarioStatus() != Mario.STATUS_WIN) {
             count--;
             copy.tick();
@@ -178,7 +176,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
 
     public void reset() {
         action = new boolean[Environment.numberOfKeys];
-        action[Mario.KEY_RIGHT] = true;
-        action[Mario.KEY_SPEED] = true;
+//        action[Mario.KEY_RIGHT] = true;
+//        action[Mario.KEY_SPEED] = true;
     }
 }
