@@ -19,12 +19,13 @@ public class Node {
     public Environment environment;
     private List<Node> children = new ArrayList<Node>();
     private Node parent = null;
-    private boolean[][] validMoves = new boolean[9][6];
+    private ArrayList<boolean[]> validMoves;
     private boolean[] parentAction = null;
     private float reward = 0;
     private int timesvisited = 0;
 
     Node(Environment e) {
+        this.validMoves = new ArrayList<boolean[]>();
         this.environment = e;
         this.state = e.getMarioState();
     }
@@ -130,14 +131,14 @@ public class Node {
     /**
      * @return the validMoves
      */
-    public boolean[][] getValidMoves() {
+    public ArrayList<boolean[]> getValidMoves() {
         return validMoves;
     }
 
     /**
      * @param validMoves the validMoves to set
      */
-    public void setValidMoves(boolean[][] validMoves) {
+    public void setValidMoves(ArrayList<boolean[]> validMoves) {
         this.validMoves = validMoves;
     }
     public String toString() {

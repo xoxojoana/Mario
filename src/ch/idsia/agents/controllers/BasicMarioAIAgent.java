@@ -115,6 +115,7 @@ public void integrateObservation(Environment environment)
     this.environment = environment;
 }
 
+//what's this one use for
 public void giveIntermediateReward(float intermediateReward)
 {
 
