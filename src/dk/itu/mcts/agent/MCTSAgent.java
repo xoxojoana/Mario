@@ -7,7 +7,7 @@ package dk.itu.mcts.agent;
 
 import ch.idsia.agents.Agent;
 import ch.idsia.agents.controllers.BasicMarioAIAgent;
-import ch.idsia.agents.controllers.ForwardAgent;
+import ch.idsia.agents.controllers.ForwardJumpingAgent;
 import ch.idsia.benchmark.mario.engine.sprites.Mario;
 import ch.idsia.benchmark.mario.environments.Environment;
 import ch.idsia.tools.EvaluationInfo;
@@ -23,7 +23,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
 
     public MCTSAgent() {
         super("MCTSAgent");
-        reset();
+//        reset();
     }
 
     public boolean[] getAction() {
@@ -47,16 +47,29 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
         Node bestChild = bestChild(root);
         System.out.println(bestChild==null?"null":bestChild.toString());
         return bestChild==null?tempAction():bestChild.getParentAction();
-        /*action[Mario.KEY_SPEED] = action[Mario.KEY_JUMP] = isMarioAbleToJump || !isMarioOnGround;
-         for (boolean b : action) {
-         System.out.print(b + "\t");
-         }
-         System.out.println();
-         return action;*/
+       /* boolean[][] validMoves = {
+         //L    R       D       J       S   U   
+        {false, true, false, false, false, false},
+        {false, true, false, true, false, false},
+        {false, true, false, true, true, false},
+        {true, false, false, false, false, false},
+        {true, false, false, true, false, false},
+        {true, false, false, true, true, false},
+        {false, false, true, false, false, false},
+        {false, true, true, false, false, false},
+        {false, true, true, false, true, false},
+        {false, true, false, true, true, false}};
+//        System.out.println("called");
+//        if(isMarioAbleToJump){
+//            return validMoves[9];
+//        }
+        return validMoves[0];
+//        return tempAction();*/
     }
     
     public boolean[] tempAction(){
         action[Mario.KEY_SPEED] = action[Mario.KEY_JUMP] = isMarioAbleToJump || !isMarioOnGround;
+        System.out.println(action[0] + " " + action[1] +  " " + action[2] + " " + action[3] + " " + action[4] + " " + action[5]);
         return action;
     }
 
@@ -74,7 +87,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
 
     //check if node is fully expanded
     public boolean isFullyExpanded(Node v) {
-        /* possible moves       L R D J S U     0 false, 1 true
+        /* possible moves        L R D J S U     0 false, 1 true
          *   right               0 1 0 0 0 0
          *   right jump          0 1 0 1 0 0
          *   right jump speed    0 1 0 1 1 0 
@@ -142,28 +155,30 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
     //play out
     public float DefaultPolicy(Node v) {
         Environment copy = v.environment;
-        int count = 10;
-        Agent agent = new ForwardAgent();
+        int count = 2;
+        Agent agent = new MCTSAgent();//ForwardJumpingAgent();
         while (!copy.isLevelFinished() && count > 0 && copy.getMarioStatus()!=Mario.STATUS_DEAD && copy.getMarioStatus() != Mario.STATUS_WIN) {
             count--;
             copy.tick();
             agent.integrateObservation(copy);
             copy.performAction(agent.getAction());
         }
-        int reward = evaluate(v.environment, copy);
+        float reward = evaluate(v.environment, copy);
         return reward;
     }
     
-    private int evaluate(Environment e1, Environment e2){
-        int totalScore = 0, coinDiff = 0, killDiff = 0;
+    private float evaluate(Environment e1, Environment e2){
+        int coinDiff = 0, killDiff = 0;
+        float marioPosDiff = 0 , totalScore = 0;
         EvaluationInfo evaluationInfo1 = e1.getEvaluationInfo().clone(), evaluationInfo2 = e2.getEvaluationInfo().clone();
         if(evaluationInfo2.marioStatus == Mario.STATUS_DEAD){ return -1;}
         if(evaluationInfo2.marioStatus == Mario.STATUS_WIN) { return 1000;}
         if(evaluationInfo2.marioStatus == Mario.STATUS_RUNNING){
             coinDiff = evaluationInfo1.coinsGained - evaluationInfo2.coinsGained;
             killDiff = evaluationInfo1.killsTotal - evaluationInfo2.killsTotal;
+            marioPosDiff = e1.getMarioFloatPos()[0] - e2.getMarioFloatPos()[0];
         }        
-        totalScore = coinDiff + killDiff;
+        totalScore = coinDiff + killDiff + marioPosDiff;
         return totalScore;
     }
 
@@ -178,7 +193,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
 
     public void reset() {
         action = new boolean[Environment.numberOfKeys];
-        action[Mario.KEY_RIGHT] = true;
-        action[Mario.KEY_SPEED] = true;
+//        action[Mario.KEY_RIGHT] = true;
+//        action[Mario.KEY_SPEED] = true;
     }
 }
