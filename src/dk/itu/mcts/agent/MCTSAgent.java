@@ -36,7 +36,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
 //        Node bestChild = BestChild(rootNode);
         Node root = new Node(this.environment);
         int t = 10;
-        while (t>10) {
+        while (t>1) {
             t--;
             System.out.println("1");
             Node v1 = TreePolicy(root);
