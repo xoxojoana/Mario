@@ -7,8 +7,10 @@ package dk.itu.mcts.agent;
 
 import ch.idsia.agents.Agent;
 import ch.idsia.agents.controllers.BasicMarioAIAgent;
+import ch.idsia.agents.controllers.ForwardAgent;
 import ch.idsia.benchmark.mario.engine.sprites.Mario;
 import ch.idsia.benchmark.mario.environments.Environment;
+import ch.idsia.tools.EvaluationInfo;
 
 /**
  *
@@ -32,11 +34,29 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
 //            Backpropagate(v1, reward);
 //        }
 //        Node bestChild = BestChild(rootNode);
-        action[Mario.KEY_SPEED] = action[Mario.KEY_JUMP] = isMarioAbleToJump || !isMarioOnGround;
-        for (boolean b : action) {
-            System.out.print(b + "\t");
+        Node root = new Node(this.environment);
+        int t = 10;
+        while (t>10) {
+            t--;
+            System.out.println("1");
+            Node v1 = TreePolicy(root);
+            float reward = DefaultPolicy(v1);
+            Backpropagate(v1, reward);
+            System.out.println("2");
         }
-        System.out.println();
+        Node bestChild = bestChild(root);
+        System.out.println(bestChild==null?"null":bestChild.toString());
+        return bestChild==null?tempAction():bestChild.getParentAction();
+        /*action[Mario.KEY_SPEED] = action[Mario.KEY_JUMP] = isMarioAbleToJump || !isMarioOnGround;
+         for (boolean b : action) {
+         System.out.print(b + "\t");
+         }
+         System.out.println();
+         return action;*/
+    }
+    
+    public boolean[] tempAction(){
+        action[Mario.KEY_SPEED] = action[Mario.KEY_JUMP] = isMarioAbleToJump || !isMarioOnGround;
         return action;
     }
 
@@ -67,11 +87,11 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
          */
         // no child yet
         if (v.getChildren().size() < 1) {
-            v = iniPossMove(v); 
+            v = iniPossMove(v);
             return false;
         }
         // still untried move left
-        if(v.getChildren().size() < v.getValidMoves().length){
+        if (v.getChildren().size() < v.getValidMoves().length) {
             return false;
         }
         return false;
@@ -88,7 +108,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
         {false, false, true, false, false, false},
         {false, true, true, false, false, false},
         {false, true, true, false, true, false}};
-        
+
         v.setValidMoves(validMoves);
         return v;
     }
@@ -96,10 +116,10 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
     //expand the node
     public Node expand(Node v) {
         boolean[] nextValidMove = v.getValidMoves()[v.getChildren().size()];
-        Environment environment = v.environment;
-        environment.tick();
-        environment.performAction(nextValidMove);
-        Node child = new Node(environment);
+        Environment e = v.environment;
+        e.tick();
+        e.performAction(nextValidMove);
+        Node child = new Node(e);
         child.setParent(v);
         child.setParentAction(nextValidMove);
         return child;
@@ -120,8 +140,31 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
     }
 
     //play out
-    public double DefaultPolicy(Node v) {
-        return 0;
+    public float DefaultPolicy(Node v) {
+        Environment copy = v.environment;
+        int count = 10;
+        Agent agent = new ForwardAgent();
+        while (!copy.isLevelFinished() && count > 0 && copy.getMarioStatus()!=Mario.STATUS_DEAD && copy.getMarioStatus() != Mario.STATUS_WIN) {
+            count--;
+            copy.tick();
+            agent.integrateObservation(copy);
+            copy.performAction(agent.getAction());
+        }
+        int reward = evaluate(v.environment, copy);
+        return reward;
+    }
+    
+    private int evaluate(Environment e1, Environment e2){
+        int totalScore = 0, coinDiff = 0, killDiff = 0;
+        EvaluationInfo evaluationInfo1 = e1.getEvaluationInfo().clone(), evaluationInfo2 = e2.getEvaluationInfo().clone();
+        if(evaluationInfo2.marioStatus == Mario.STATUS_DEAD){ return -1;}
+        if(evaluationInfo2.marioStatus == Mario.STATUS_WIN) { return 1000;}
+        if(evaluationInfo2.marioStatus == Mario.STATUS_RUNNING){
+            coinDiff = evaluationInfo1.coinsGained - evaluationInfo2.coinsGained;
+            killDiff = evaluationInfo1.killsTotal - evaluationInfo2.killsTotal;
+        }        
+        totalScore = coinDiff + killDiff;
+        return totalScore;
     }
 
     //Backpropagate the reward to each node

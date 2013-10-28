@@ -140,5 +140,8 @@ public class Node {
     public void setValidMoves(boolean[][] validMoves) {
         this.validMoves = validMoves;
     }
+    public String toString() {
+        return "parent: "+this.parent.environment.getMarioMode() + " ";
+    }
 
 }

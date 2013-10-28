@@ -79,7 +79,7 @@ public boolean runSingleEpisode(final int repetitionsOfSingleEpisode)
                 c = System.currentTimeMillis();
                 agent.integrateObservation(environment);
                 agent.giveIntermediateReward(environment.getIntermediateReward());
-
+                //are we allowed to pass environment parameter here???
                 boolean[] action = agent.getAction();
                 if (System.currentTimeMillis() - c > COMPUTATION_TIME_BOUND)
                     return false;

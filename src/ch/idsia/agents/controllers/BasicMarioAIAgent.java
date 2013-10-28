@@ -68,6 +68,7 @@ protected int receptiveFieldWidth;
 protected int receptiveFieldHeight;
 protected int marioEgoRow;
 protected int marioEgoCol;
+protected Environment environment;
 
 // values of these variables could be changed during the Agent-Environment interaction.
 // Use them to get more detailed or less detailed description of the level.
@@ -80,10 +81,10 @@ public BasicMarioAIAgent(String s)
     setName(s);
 }
 
+@Override
 public boolean[] getAction()
 {
     return new boolean[Environment.numberOfKeys];
-
 }
 
 public void integrateObservation(Environment environment)
@@ -111,6 +112,7 @@ public void integrateObservation(Environment environment)
     getKillsByFire = marioState[7];
     getKillsByStomp = marioState[8];
     getKillsByShell = marioState[9];
+    this.environment = environment;
 }
 
 public void giveIntermediateReward(float intermediateReward)
@@ -132,7 +134,6 @@ public void setObservationDetails(final int rfWidth, final int rfHeight, final i
     marioEgoCol = egoCol;
 }
 
-@Deprecated
 public boolean[] getAction(Environment observation)
 {
     return new boolean[Environment.numberOfKeys]; // Empty action
