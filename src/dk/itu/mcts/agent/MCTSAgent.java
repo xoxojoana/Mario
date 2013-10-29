@@ -209,13 +209,13 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
     //play out
     public float DefaultPolicy(Node v) {
         Environment copy = v.environment;
-        int count = 2;
+        int count = 5;
         while (!copy.isLevelFinished() && count > 0 && copy.getMarioStatus()!=Mario.STATUS_DEAD && copy.getMarioStatus() != Mario.STATUS_WIN) {
             count--;
             /*agent.integrateObservation(copy);
             copy.performAction(agent.getAction());
             copy.tick();*/            
-            sim.advanceStep(null, false); //simulator need to be continuesly used
+            sim.advanceStep(null, true); //simulator need to be continuesly used
         }
        // float reward = evaluate(v.environment, copy);
         float reward = evaluateByLevelScene(v);
@@ -223,9 +223,10 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
     }
     
     private float evaluateByLevelScene(Node v){
-        //only evaluate by the x coordinator for now
+        //only evaluate by the x and y coordinator for now
         float xDiff = v.getMarioPos()[0] - sim.simulatedWorld.mario.x;
-        return Math.abs(xDiff);
+        //float yDiff = v.getMarioPos()[1] - sim.simulatedWorld.mario.y;
+        return Math.abs(xDiff); //+ Math.abs(yDiff);
     }
     
     private float evaluate(Environment e1, Environment e2){

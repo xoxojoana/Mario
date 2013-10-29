@@ -182,10 +182,11 @@ public void tick()
     drawStringDropShadow(thisVolatileImageGraphics, msg, 0, 7, 6);
 
     msg = "";
+    System.out.println("");
     if (mario.keys != null)
     {
         for (int i = 0; i < Environment.numberOfKeys; ++i){
-            System.out.println(i + " " +  mario.keys[i]);
+            System.out.print(mario.keys[i] + "; ");
             msg += (mario.keys[i]) ? LevelScene.keysStr[i] : "    ";
         }
     } else
