@@ -50,6 +50,7 @@ public ForwardJumpingAgent()
 public boolean[] getAction()
 {
     action[Mario.KEY_SPEED] = action[Mario.KEY_JUMP] = isMarioAbleToJump || !isMarioOnGround;
+    System.out.println("isMarioAbleToJump: " + isMarioAbleToJump + "\t!isMarioOnGround: " + isMarioOnGround);
     return action;
 }
 

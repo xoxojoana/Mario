@@ -152,10 +152,25 @@ public class Node {
     public void setValidMoves(ArrayList<boolean[]> validMoves) {
         this.validMoves = validMoves;
     }
+    
+    @Override
     public String toString() {
         String parent = this.parent!=null?" Parent"+this.parent.toString():"";
-        return "Mario: " + getMarioPos()[0] + ", " + getMarioPos()[1] + ";" + parent;
+        return "Mario: " + getMarioPos()[0] + ", " + getMarioPos()[1] + ";" + parent + actionReadable(getParentAction());
     }
+    
+    private String actionReadable(boolean[] action){
+        if(action == null) return "";
+        String s = "\tAction:";
+        if(action[0]) s += "Left\t";
+        if(action[1]) s += "Right\t";
+        if(action[2]) s += "Down\t";
+        if(action[3]) s += "Jump\t";
+        if(action[4]) s += "Speed\t";
+        if(action[5]) s += "Up";
+        return s;
+    }
+    
 
     /**
      * @return the marioPos

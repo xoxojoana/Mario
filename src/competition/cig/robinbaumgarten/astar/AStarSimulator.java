@@ -209,6 +209,7 @@ public class AStarSimulator
     
     // estimate the optimal forward movement for a fixed amount of ticks, given a speed and an action
     // This is a bit hacky
+    
     public float[] estimateMaximumForwardMovement(float currentAccel, boolean[] action, int ticks)
     {
     	float dist = 0;
