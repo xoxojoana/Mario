@@ -39,14 +39,6 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
 //        Node bestChild = BestChild(rootNode);
         long startTime = System.currentTimeMillis();
         sim.updateInternalWorld(this.environment);
-        String s = "Fire";
-    	if (!sim.currentWorld.mario.fire)
-    		s = "Large";
-    	if (!sim.currentWorld.mario.large)
-    		s = "Small";
-        boolean[] ac = new boolean[5];
-    	ac[Mario.KEY_RIGHT] = true;
-    	ac[Mario.KEY_SPEED] = true;
         Node root = new Node(this.environment);
         int t = 5;
         while (t>1) {
@@ -135,21 +127,23 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
 
         v.setValidMoves(validMoves);*/
         ArrayList<boolean[]> possibleActions = new ArrayList<boolean[]>();
+        boolean jump = canJumpHigher(v, true);
+        System.out.print("jump " + jump);
     	// jump
-    	if (canJumpHigher(v, true)) possibleActions.add(createAction(false, false, false, true, false, false));
-    	if (canJumpHigher(v, true)) possibleActions.add(createAction(false, false, false, true, true, false));
+    	if (jump) possibleActions.add(createAction(false, false, false, true, false, false));
+    	if (jump) possibleActions.add(createAction(false, false, false, true, true, false));
     	
     	// run right
     	possibleActions.add(createAction(false, true, false, false, true, false));
-    	if (canJumpHigher(v, true))  possibleActions.add(createAction(false, true, false, true, true, false));
+    	if (jump)  possibleActions.add(createAction(false, true, false, true, true, false));
     	possibleActions.add(createAction(false, true, false, false, false, false));
-    	if (canJumpHigher(v, true))  possibleActions.add(createAction(false, true, false, true, false, false));
+    	if (jump)  possibleActions.add(createAction(false, true, false, true, false, false));
  	
     	// run left
     	possibleActions.add(createAction(true, false, false, false, false, false));
-    	if (canJumpHigher(v, true))  possibleActions.add(createAction(true, false, false, true, false, false));
+    	if (jump)  possibleActions.add(createAction(true, false, false, true, false, false));
     	possibleActions.add(createAction(true, false, false, false, true, false));
-    	if (canJumpHigher(v, true))  possibleActions.add(createAction(true, false, false, true, true, false));
+    	if (jump)  possibleActions.add(createAction(true, false, false, true, true, false));
     	
         v.setValidMoves(possibleActions);
         return v;
@@ -169,7 +163,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
     
     private boolean canJumpHigher(Node v, boolean checkParent){
         if(v.getParent() != null && checkParent && canJumpHigher(v.getParent(), false)) return true;
-        return v.environment.isMarioAbleToJump();
+        return v.environment.isMarioAbleToJump() || sim.currentWorld.mario.jumpTime>0;
     }
 
     //expand the node
@@ -225,8 +219,17 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
     private float evaluateByLevelScene(Node v){
         //only evaluate by the x and y coordinator for now
         float xDiff = v.getMarioPos()[0] - sim.simulatedWorld.mario.x;
-        //float yDiff = v.getMarioPos()[1] - sim.simulatedWorld.mario.y;
-        return Math.abs(xDiff); //+ Math.abs(yDiff);
+        float yDiff = v.getMarioPos()[1] - sim.simulatedWorld.mario.y;
+        if(sim.simulatedWorld.mario.status == Mario.STATUS_DEAD){
+            return -100;
+        }
+        if(sim.currentWorld.mario.fire && !sim.simulatedWorld.mario.fire){
+            return -100;
+        }
+        if(sim.currentWorld.mario.large && ! sim.simulatedWorld.mario.large){
+            return -100;
+        }
+        return Math.abs(xDiff) + Math.abs(yDiff);
     }
     
     private float evaluate(Environment e1, Environment e2){

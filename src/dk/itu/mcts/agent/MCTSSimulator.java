@@ -63,20 +63,20 @@ public class MCTSSimulator {
     
     private boolean[] randomAction(LevelScene ls){
         ArrayList<boolean[]> possibleActions = new ArrayList<boolean[]>();
-
+//        System.out.println("\tSim: " + ls.mario.mayJump() + " time: " + ls.mario.jumpTime);
     	// jump
-    	if (ls.mario.mayJump()) possibleActions.add(MCTSAgent.createAction(false, false, false, true, false, false));
-    	if (ls.mario.mayJump()) possibleActions.add(MCTSAgent.createAction(false, false, false, true, true, false));
+    	if (ls.mario.mayJump() || ls.mario.jumpTime > 0) possibleActions.add(MCTSAgent.createAction(false, false, false, true, false, false));
+    	if (ls.mario.mayJump() || ls.mario.jumpTime > 0) possibleActions.add(MCTSAgent.createAction(false, false, false, true, true, false));
         // run right
     	possibleActions.add(MCTSAgent.createAction(false, true, false, false, true, false));
-    	if (ls.mario.mayJump())  possibleActions.add(MCTSAgent.createAction(false, true, false, true, true, false));
+    	if (ls.mario.mayJump() || ls.mario.jumpTime > 0)  possibleActions.add(MCTSAgent.createAction(false, true, false, true, true, false));
     	possibleActions.add(MCTSAgent.createAction(false, true, false, false, false, false));
-    	if (ls.mario.mayJump())  possibleActions.add(MCTSAgent.createAction(false, true, false, true, false, false));
+    	if (ls.mario.mayJump() || ls.mario.jumpTime > 0)  possibleActions.add(MCTSAgent.createAction(false, true, false, true, false, false));
          // run left
     	possibleActions.add(MCTSAgent.createAction(true, false, false, false, false, false));
-    	if (ls.mario.mayJump())  possibleActions.add(MCTSAgent.createAction(true, false, false, true, false, false));
+    	if (ls.mario.mayJump() || ls.mario.jumpTime > 0)  possibleActions.add(MCTSAgent.createAction(true, false, false, true, false, false));
     	possibleActions.add(MCTSAgent.createAction(true, false, false, false, true, false));
-    	if (ls.mario.mayJump())  possibleActions.add(MCTSAgent.createAction(true, false, false, true, true, false));
+    	if (ls.mario.mayJump() || ls.mario.jumpTime > 0)  possibleActions.add(MCTSAgent.createAction(true, false, false, true, true, false));
         Random r = new Random();
         return possibleActions.get(r.nextInt(possibleActions.size()-1));
     }
