@@ -45,6 +45,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
         Node root = new Node(this.environment);
         root = iniPossMove(root);
         int t = root.getValidMoves().size();
+       // while(startTime < 40 - responseTime){
         while (t>0) {
             t--;
             Node v1 = TreePolicy(root);
@@ -53,7 +54,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
         }
         Node bestChild = bestChild(root);
         System.out.println(bestChild==null?"null":bestChild.toString());
-        return bestChild.getParentAction();//bestChild==null?tempAction():bestChild.getParentAction();
+        return bestChild==null?tempAction():bestChild.getParentAction();
        /* boolean[][] validMoves = {
          //L    R       D       J       S   U   
         {false, true, false, false, false, false},
@@ -76,7 +77,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
     
     public boolean[] tempAction(){
         action[Mario.KEY_SPEED] = action[Mario.KEY_JUMP] = isMarioAbleToJump || !isMarioOnGround;
-        System.out.println(action[0] + " " + action[1] +  " " + action[2] + " " + action[3] + " " + action[4] + " " + action[5]);
+        System.out.println("Temp " + action[0] + " " + action[1] +  " " + action[2] + " " + action[3] + " " + action[4] + " " + action[5]);
         return action;
     }
 
@@ -206,6 +207,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
 
     //play out
     public float DefaultPolicy(Node v) {
+        if(v == null) return -100;
         Environment copy = v.environment;
         int count = 3;
         while (!copy.isLevelFinished() && count > 0 && sim.simulatedWorld.mario.status!=Mario.STATUS_DEAD && sim.simulatedWorld.mario.status != Mario.STATUS_WIN) {
@@ -234,6 +236,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
             return -100;
         }
         boolean extra = v.getParentAction()[1] &&  v.getParentAction()[3] &&  v.getParentAction()[4];
+        //add extra reward for specific move right, speed, jump
         int e = extra?50:0;
         return xDiff + Math.abs(yDiff) + e;
     }
