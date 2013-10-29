@@ -53,7 +53,7 @@ public class LevelScene implements SpriteContext, Cloneable
         return clone;
     }
     
-    @Override protected Object clone() throws CloneNotSupportedException 
+    @Override public Object clone() throws CloneNotSupportedException 
     {
     	LevelScene c = (LevelScene) super.clone();
     	c.mario = (Mario) this.mario.clone();
@@ -103,7 +103,7 @@ public class LevelScene implements SpriteContext, Cloneable
         {
             for (int x = MarioXInMap - HalfObsWidth, obsY = 0; x < MarioXInMap + HalfObsWidth; x++, obsY++)
             {
-                if (x >=0 && x <= level.xExit && y >= 0 && y < level.height)
+                if (x >=0 && x <= level.xExit && y >= 0 && y < level.height && obsX < data.length && obsY < data.length)
                 {
                 	byte datum = data[obsX][obsY];
                 	

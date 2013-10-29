@@ -16,7 +16,7 @@ import java.util.List;
 public class Node {
 
     private float[] marioPos;
-    private int[] state;
+    private int status;
     public Environment environment;
     private List<Node> children = new ArrayList<Node>();
     private Node parent = null;
@@ -30,19 +30,19 @@ public class Node {
         this.validMoves = new ArrayList<boolean[]>();
         this.environment = e;
         this.marioPos = e.getMarioFloatPos();
-        this.state = e.getMarioState();
+        this.status = e.getMarioStatus();
     }
     
     //child node, information filled by simulator
-     Node(Environment e, float[] pos, int[] state) {
+     Node(Environment e, float[] pos, int status) {
         this.validMoves = new ArrayList<boolean[]>();
         this.environment = e;
         this.marioPos = pos;
-        this.state = state;
+        this.status = status;
     }
 
     public boolean gameOver() {
-        if (getState()[0] == 2) {
+        if (getStatus() == 2) {
             return false;
         }
         return true;
@@ -51,15 +51,15 @@ public class Node {
     /**
      * @return the Mario state
      */
-    public int[] getState() {
-        return state;
+    public int getStatus() {
+        return status;
     }
 
     /**
      * @param state the state to set
      */
-    public void setState(int[] state) {
-        this.state = state;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     /**

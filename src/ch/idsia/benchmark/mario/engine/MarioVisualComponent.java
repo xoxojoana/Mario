@@ -184,8 +184,10 @@ public void tick()
     msg = "";
     if (mario.keys != null)
     {
-        for (int i = 0; i < Environment.numberOfKeys; ++i)
+        for (int i = 0; i < Environment.numberOfKeys; ++i){
+            System.out.println(i + " " +  mario.keys[i]);
             msg += (mario.keys[i]) ? LevelScene.keysStr[i] : "    ";
+        }
     } else
         msg = "NULL";
     drawString(thisVolatileImageGraphics, msg, 107, 61, 1);

@@ -12,6 +12,7 @@ import ch.idsia.benchmark.mario.engine.sprites.Mario;
 import ch.idsia.benchmark.mario.environments.Environment;
 import ch.idsia.tools.EvaluationInfo;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  *
@@ -50,7 +51,6 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
         int t = 5;
         while (t>1) {
             t--;
-            System.out.println(t);
             Node v1 = TreePolicy(root);
             float reward = DefaultPolicy(v1);
             Backpropagate(v1, reward);
@@ -135,35 +135,35 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
 
         v.setValidMoves(validMoves);*/
         ArrayList<boolean[]> possibleActions = new ArrayList<boolean[]>();
-
     	// jump
-    	if (canJumpHigher(v, true)) possibleActions.add(createAction(false, false, false, true, false));
-    	if (canJumpHigher(v, true)) possibleActions.add(createAction(false, false, false, true, true));
+    	if (canJumpHigher(v, true)) possibleActions.add(createAction(false, false, false, true, false, false));
+    	if (canJumpHigher(v, true)) possibleActions.add(createAction(false, false, false, true, true, false));
     	
     	// run right
-    	possibleActions.add(createAction(false, true, false, false, true));
-    	if (canJumpHigher(v, true))  possibleActions.add(createAction(false, true, false, true, true));
-    	possibleActions.add(createAction(false, true, false, false, false));
-    	if (canJumpHigher(v, true))  possibleActions.add(createAction(false, true, false, true, false));
+    	possibleActions.add(createAction(false, true, false, false, true, false));
+    	if (canJumpHigher(v, true))  possibleActions.add(createAction(false, true, false, true, true, false));
+    	possibleActions.add(createAction(false, true, false, false, false, false));
+    	if (canJumpHigher(v, true))  possibleActions.add(createAction(false, true, false, true, false, false));
  	
     	// run left
-    	possibleActions.add(createAction(true, false, false, false, false));
-    	if (canJumpHigher(v, true))  possibleActions.add(createAction(true, false, false, true, false));
-    	possibleActions.add(createAction(true, false, false, false, true));
-    	if (canJumpHigher(v, true))  possibleActions.add(createAction(true, false, false, true, true));
+    	possibleActions.add(createAction(true, false, false, false, false, false));
+    	if (canJumpHigher(v, true))  possibleActions.add(createAction(true, false, false, true, false, false));
+    	possibleActions.add(createAction(true, false, false, false, true, false));
+    	if (canJumpHigher(v, true))  possibleActions.add(createAction(true, false, false, true, true, false));
     	
         v.setValidMoves(possibleActions);
         return v;
     }
     
-      private boolean[] createAction(boolean left, boolean right, boolean down, boolean jump, boolean speed)
+      public static boolean[] createAction(boolean left, boolean right, boolean down, boolean jump, boolean speed, boolean up)
     {
-    	boolean[] action = new boolean[5];
+    	boolean[] action = new boolean[6];
     	action[Mario.KEY_DOWN] = down;
     	action[Mario.KEY_JUMP] = jump;
     	action[Mario.KEY_LEFT] = left;
     	action[Mario.KEY_RIGHT] = right;
     	action[Mario.KEY_SPEED] = speed;
+        action[Mario.KEY_UP] = up;
     	return action;
     }
     
@@ -178,9 +178,13 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
         int index = v.getChildren().size()>1?v.getChildren().size()-1:v.getChildren().size();
         boolean[] nextValidMove = v.getValidMoves().get(index);
         Environment e = v.environment;
-        e.performAction(nextValidMove);  
-        e.tick();
-        Node child = new Node(e);
+//        e.performAction(nextValidMove);  
+//        e.tick();
+        sim.advanceStep(nextValidMove, false);
+        float[] pos = new float[2];
+        pos[0] =  sim.simulatedWorld.mario.x;
+        pos[1] =  sim.simulatedWorld.mario.y;
+        Node child = new Node(e,pos, sim.simulatedWorld.mario.status);
         
         child.setParent(v);
         child.setParentAction(nextValidMove);
@@ -206,15 +210,22 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
     public float DefaultPolicy(Node v) {
         Environment copy = v.environment;
         int count = 2;
-        Agent agent = new ForwardJumpingAgent();//ForwardJumpingAgent();
         while (!copy.isLevelFinished() && count > 0 && copy.getMarioStatus()!=Mario.STATUS_DEAD && copy.getMarioStatus() != Mario.STATUS_WIN) {
             count--;
-            agent.integrateObservation(copy);
+            /*agent.integrateObservation(copy);
             copy.performAction(agent.getAction());
-            copy.tick();            
+            copy.tick();*/            
+            sim.advanceStep(null, false); //simulator need to be continuesly used
         }
-        float reward = evaluate(v.environment, copy);
+       // float reward = evaluate(v.environment, copy);
+        float reward = evaluateByLevelScene(v);
         return reward;
+    }
+    
+    private float evaluateByLevelScene(Node v){
+        //only evaluate by the x coordinator for now
+        float xDiff = v.getMarioPos()[0] - sim.simulatedWorld.mario.x;
+        return Math.abs(xDiff);
     }
     
     private float evaluate(Environment e1, Environment e2){
