@@ -37,6 +37,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
 //        }
 //        Node bestChild = BestChild(rootNode);
         long startTime = System.currentTimeMillis();
+        sim.updateInternalWorld(this.environment);
         String s = "Fire";
     	if (!sim.currentWorld.mario.fire)
     		s = "Large";
@@ -49,11 +50,10 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
         int t = 5;
         while (t>1) {
             t--;
-            System.out.println("1");
+            System.out.println(t);
             Node v1 = TreePolicy(root);
             float reward = DefaultPolicy(v1);
             Backpropagate(v1, reward);
-            System.out.println("2");
         }
         Node bestChild = bestChild(root);
         System.out.println(bestChild==null?"null":bestChild.toString());
@@ -115,7 +115,7 @@ public class MCTSAgent extends BasicMarioAIAgent implements Agent {
             return false;
         }
         // still untried move left
-        if (v.getChildren().size() <= v.getValidMoves().size()) {
+        if (v.getChildren().size() < v.getValidMoves().size()) {
             return false;
         }
         return false;

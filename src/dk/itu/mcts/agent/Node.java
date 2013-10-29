@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class Node {
 
+    private float[] marioPos;
     private int[] state;
     public Environment environment;
     private List<Node> children = new ArrayList<Node>();
@@ -24,10 +25,20 @@ public class Node {
     private float reward = 0;
     private int timesvisited = 0;
 
+    //parent node
     Node(Environment e) {
         this.validMoves = new ArrayList<boolean[]>();
         this.environment = e;
+        this.marioPos = e.getMarioFloatPos();
         this.state = e.getMarioState();
+    }
+    
+    //child node, information filled by simulator
+     Node(Environment e, float[] pos, int[] state) {
+        this.validMoves = new ArrayList<boolean[]>();
+        this.environment = e;
+        this.marioPos = pos;
+        this.state = state;
     }
 
     public boolean gameOver() {
@@ -142,7 +153,22 @@ public class Node {
         this.validMoves = validMoves;
     }
     public String toString() {
-        return "parent: "+this.parent.environment.getMarioMode() + " ";
+        String parent = this.parent!=null?" Parent"+this.parent.toString():"";
+        return "Mario: " + getMarioPos()[0] + ", " + getMarioPos()[1] + ";" + parent;
+    }
+
+    /**
+     * @return the marioPos
+     */
+    public float[] getMarioPos() {
+        return marioPos;
+    }
+
+    /**
+     * @param marioPos the marioPos to set
+     */
+    public void setMarioPos(float[] marioPos) {
+        this.marioPos = marioPos;
     }
 
 }

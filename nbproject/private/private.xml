@@ -5,11 +5,15 @@
         <group>
             <file>file:/C:/Users/Jinhong/Dropbox/School/NetBeansProjects/Mario/src/ch/idsia/benchmark/mario/environments/Environment.java</file>
             <file>file:/C:/Users/Jinhong/Dropbox/School/NetBeansProjects/Mario/src/ch/idsia/benchmark/mario/environments/MarioEnvironment.java</file>
-            <file>file:/C:/Users/Jinhong/Dropbox/School/NetBeansProjects/Mario/src/ch/idsia/agents/Agent.java</file>
-            <file>file:/C:/Users/Jinhong/Dropbox/School/NetBeansProjects/Mario/src/ch/idsia/tools/amico/AmiCoJavaPy.java</file>
+            <file>file:/C:/Users/Jinhong/Dropbox/School/NetBeansProjects/Mario/src/competition/cig/robinbaumgarten/astar/sprites/Mario.java</file>
+            <file>file:/C:/Users/Jinhong/Dropbox/School/NetBeansProjects/Mario/src/ch/idsia/scenarios/Main.java</file>
+            <file>file:/C:/Users/Jinhong/Dropbox/School/NetBeansProjects/Mario/src/competition/cig/robinbaumgarten/astar/LevelScene.java</file>
+            <file>file:/C:/Users/Jinhong/Dropbox/School/NetBeansProjects/Mario/src/ch/idsia/benchmark/mario/engine/LevelScene.java</file>
             <file>file:/C:/Users/Jinhong/Dropbox/School/NetBeansProjects/Mario/src/ch/idsia/benchmark/tasks/BasicTask.java</file>
-            <file>file:/C:/Users/Jinhong/Dropbox/School/NetBeansProjects/Mario/src/ch/idsia/agents/AmiCoAgent.java</file>
-            <file>file:/C:/Users/Jinhong/Dropbox/School/NetBeansProjects/Mario/src/ch/idsia/agents/controllers/BasicMarioAIAgent.java</file>
+            <file>file:/C:/Users/Jinhong/Dropbox/School/NetBeansProjects/Mario/src/ch/idsia/benchmark/mario/engine/MarioVisualComponent.java</file>
+            <file>file:/C:/Users/Jinhong/Dropbox/School/NetBeansProjects/Mario/src/dk/itu/mcts/agent/Node.java</file>
+            <file>file:/C:/Users/Jinhong/Dropbox/School/NetBeansProjects/Mario/src/competition/cig/robinbaumgarten/astar/AStarSimulator.java</file>
+            <file>file:/C:/Users/Jinhong/Dropbox/School/NetBeansProjects/Mario/src/competition/cig/robinbaumgarten/AStarAgent.java</file>
             <file>file:/C:/Users/Jinhong/Dropbox/School/NetBeansProjects/Mario/src/dk/itu/mcts/agent/MCTSAgent.java</file>
         </group>
     </open-files>
