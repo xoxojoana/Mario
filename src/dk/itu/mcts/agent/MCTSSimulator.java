@@ -19,25 +19,39 @@ import java.util.logging.Logger;
  */
 public class MCTSSimulator {
     public LevelScene currentWorld, simulatedWorld;
-    public int timeBudget = 20;
     
     public MCTSSimulator(){
         initialiseSimulator();
     }
     
+    /**
+     * Initialise the simulator
+     */
     public void initialiseSimulator(){
         currentWorld = new LevelScene();
         currentWorld.init();
         currentWorld.level = new Level(1500,15);
     }
     
+    /**
+     * update internal world to the newest states
+     * @param e 
+     */
     public void updateInternalWorld(Environment e){
         byte[][] scene = e.getLevelSceneObservationZ(0);
     	float[] enemies = e.getEnemiesFloatPos();
         float[] realMarioPos = e.getMarioFloatPos();
+        currentWorld.mario.fire = e.getMarioMode()==2;
+        currentWorld.mario.large = e.getMarioMode()>=1;        
         setLevelPart(scene, enemies, realMarioPos);
     }
     
+    /**
+     * update internal level scene state
+     * @param levelPart
+     * @param enemies
+     * @param realMarioPos 
+     */
     public void setLevelPart(byte[][] levelPart, float[] enemies, float[] realMarioPos){
         currentWorld.setLevelScene(levelPart);
         currentWorld.setEnemies(enemies);
@@ -45,6 +59,15 @@ public class MCTSSimulator {
         currentWorld.mario.y = realMarioPos[1];
     }
     
+    /**
+     * Simulate a "future" game with input actions. The boolean value required here
+     * is for checking whether it needs to create a new simulator. If it's true with playout, it means 
+     * the actions are made for the same simulator, therefore it is no need to create a new simulator.
+     * If the action value is null, the program will generate a new random valid move.
+     * 
+     * @param action
+     * @param playOut 
+     */
     public void advanceStep(boolean[] action, boolean playOut){
         //if it is not in playout(defaultPolicy), the simulatedWorld needs to be recloned from currentWorld.
         if(simulatedWorld == null || !playOut){
@@ -61,10 +84,15 @@ public class MCTSSimulator {
         simulatedWorld.tick();
     }   
     
+    /**
+     * For generating a new random but valid move for simulator
+     * @param ls
+     * @return 
+     */
     private boolean[] randomAction(LevelScene ls){
         ArrayList<boolean[]> possibleActions = new ArrayList<boolean[]>();
-//        System.out.println("\tSim: " + ls.mario.mayJump() + " time: " + ls.mario.jumpTime);
         boolean jump = canJumpHigher();
+        if(!simulatedWorld.mario.onGround && !simulatedWorld.mario.mayJump()) possibleActions.add(MCTSAgent.createAction(false, true, false, true, true, false));
     	// jump
     	if (jump) possibleActions.add(MCTSAgent.createAction(false, false, false, true, false, false));
     	if (jump) possibleActions.add(MCTSAgent.createAction(false, false, false, true, true, false));
@@ -78,7 +106,6 @@ public class MCTSSimulator {
     	if (jump)  possibleActions.add(MCTSAgent.createAction(true, false, false, true, false, false));
     	possibleActions.add(MCTSAgent.createAction(true, false, false, false, true, false));
     	if (jump)  possibleActions.add(MCTSAgent.createAction(true, false, false, true, true, false));
-        if(!simulatedWorld.mario.onGround && !simulatedWorld.mario.mayJump()) possibleActions.add(MCTSAgent.createAction(false, true, false, true, true, false));
         Random r = new Random();
         return possibleActions.get(r.nextInt(possibleActions.size()-1));
     }    

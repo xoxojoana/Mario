@@ -656,7 +656,8 @@ public class Mario extends Sprite implements Cloneable
     public void getCoin()
     {
         coins++;
-        world.coinsCollected++;
+        System.out.println("Coin++ :" + coins);
+        world.coinsCollected = world.coinsCollected + 1;
         if (coins % 100 == 0)
             get1Up();
     }

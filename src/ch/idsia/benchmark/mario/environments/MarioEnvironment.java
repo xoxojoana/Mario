@@ -89,7 +89,7 @@ public static MarioEnvironment getInstance()
     return ourInstance;
 }
 
-private MarioEnvironment()
+public MarioEnvironment()
 {
 //        System.out.println("System.getProperty(\"java.awt.headless\") = " + System.getProperty("java.awt.headless"));
 //        System.out.println("System.getProperty(\"verbose\") = " + System.getProperty("-verbose"));

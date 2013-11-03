@@ -25,7 +25,10 @@ public class Node {
     private float reward = 0;
     private int timesvisited = 0;
 
-    //parent node
+    /**
+     * for creating parent node
+     * @param e 
+     */
     Node(Environment e) {
         this.validMoves = new ArrayList<boolean[]>();
         this.environment = e;
@@ -33,7 +36,12 @@ public class Node {
         this.status = e.getMarioStatus();
     }
     
-    //child node, information filled by simulator
+    /**
+     * For creating child node
+     * @param e
+     * @param pos
+     * @param status 
+     */
      Node(Environment e, float[] pos, int status) {
         this.validMoves = new ArrayList<boolean[]>();
         this.environment = e;
@@ -41,11 +49,12 @@ public class Node {
         this.status = status;
     }
 
+     /**
+      * check if game is over
+      * @return 
+      */
     public boolean gameOver() {
-        if (getStatus() == 2) {
-            return false;
-        }
-        return true;
+        return getStatus() != 2;
     }
 
     /**
@@ -159,6 +168,11 @@ public class Node {
         return "Mario: " + getMarioPos()[0] + ", " + getMarioPos()[1] + ";" + parent + actionReadable(getParentAction());
     }
     
+    /**
+     * generate readable actions
+     * @param action
+     * @return 
+     */
     private String actionReadable(boolean[] action){
         if(action == null) return "";
         String s = "\tAction:";

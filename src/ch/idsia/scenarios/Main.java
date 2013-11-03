@@ -11,7 +11,8 @@ public final class Main {
     public static void main(String[] args) {
 //        final String argsString = "-vis on";
 //    String test ="-ag dk.itu.mcts.agent. -vlx 330 -vly 290 -ld 1 -ls 42 -ll 256 -lt 1";
-        String test = "-ag dk.itu.mcts.agent.MCTSAgent -vis on";//"-ag ch.idsia.agents.controllers.ForwardJumpingAgent";//
+        String test = "-ag dk.itu.mcts.agent.MCTSAgent -vis on";
+//         String test = "-ag ch.idsia.agents.controllers.ForwardJumpingAgent";
         final MarioAIOptions marioAIOptions = new MarioAIOptions(test);
 //        final MarioAIOptions marioAIOptions = new MarioAIOptions(args);
 //        final Environment environment = new MarioEnvironment();
